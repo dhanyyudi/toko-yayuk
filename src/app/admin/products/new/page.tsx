@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { supabase, getImageUrl } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/client'
+import { getImageUrl } from '@/lib/supabase'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +15,7 @@ import { ArrowLeft, Save, Upload, ImageIcon } from 'lucide-react'
 
 export default function NewProductPage() {
   const router = useRouter()
+  const supabase = createClient()
   const [saving, setSaving] = useState(false)
   
   // Form fields

@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const isLoginPage = pathname === '/admin/login'
   const [checking, setChecking] = useState(!isLoginPage)
+  const supabase = createClient()
 
   useEffect(() => {
     // Don't check session on the login page itself
@@ -18,8 +19,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
 
     async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
         router.replace('/admin/login')
       } else {
         setChecking(false)
@@ -34,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     })
 
     return () => subscription.unsubscribe()
-  }, [router, isLoginPage])
+  }, [router, isLoginPage, supabase])
 
   if (checking) {
     return (

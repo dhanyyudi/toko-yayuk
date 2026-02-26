@@ -3,7 +3,8 @@
 import { useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { supabase, getImageUrl } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/client'
+import { getImageUrl } from '@/lib/supabase'
 import { ProductFull } from '@/types/database'
 
 import { Button } from '@/components/ui/button'
@@ -29,6 +30,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
   // Use `use()` to unwrap the Promise
   const resolvedParams = use(params)
   const productId = resolvedParams.id
+  const supabase = createClient()
   
   const [product, setProduct] = useState<ProductFull | null>(null)
   const [loading, setLoading] = useState(true)
@@ -80,7 +82,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
       setLoading(false)
     }
     loadProduct()
-  }, [productId])
+  }, [productId, supabase])
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]

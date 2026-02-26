@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/client'
 import { ProductFull } from '@/types/database'
 import { getWallsProducts, getPriceByType } from '@/lib/data'
 
@@ -27,17 +27,18 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState<ProductFull[]>([])
   const [loading, setLoading] = useState(true)
   const [userEmail, setUserEmail] = useState('')
+  const supabase = createClient()
 
   useEffect(() => {
     async function load() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) setUserEmail(session.user.email || '')
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) setUserEmail(user.email || '')
       const data = await getWallsProducts()
       setProducts(data)
       setLoading(false)
     }
     load()
-  }, [])
+  }, [supabase])
 
   async function handleLogout() {
     await supabase.auth.signOut()
