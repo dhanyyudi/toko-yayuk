@@ -30,6 +30,7 @@ export default function AdminDashboard() {
   const supabase = createClient()
 
   useEffect(() => {
+    if (!supabase) return
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) setUserEmail(user.email || '')

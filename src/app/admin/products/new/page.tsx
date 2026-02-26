@@ -39,6 +39,10 @@ export default function NewProductPage() {
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
+    if (!supabase) {
+      alert('Authentication service not available')
+      return
+    }
     setSaving(true)
 
     // 1. Get Category ID (assuming 'Walls' exists)

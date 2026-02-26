@@ -50,7 +50,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
   const [activeBadges, setActiveBadges] = useState<string[]>([])
 
   useEffect(() => {
-    if (!productId) return
+    if (!productId || !supabase) return
     async function loadProduct() {
       const { data } = await supabase
         .from('products')

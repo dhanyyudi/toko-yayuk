@@ -12,6 +12,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const supabase = createClient()
 
   useEffect(() => {
+    // Skip if supabase client not available (SSR/build)
+    if (!supabase) return
+    
     // Don't check session on the login page itself
     if (isLoginPage) {
       setChecking(false)
@@ -28,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
     checkSession()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, session: { user: any } | null) => {
       if (!session && !isLoginPage) {
         router.replace('/admin/login')
       }

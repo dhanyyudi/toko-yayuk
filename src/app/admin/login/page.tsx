@@ -21,6 +21,10 @@ export default function AdminLoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+    if (!supabase) {
+      setError('Authentication service not available')
+      return
+    }
     setLoading(true)
     setError('')
 
