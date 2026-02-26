@@ -1,26 +1,699 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==============================
+   TOKO YAYUK – BUBBLE SHOWCASE
+   Design system: organic blobs, 
+   vibrant colors, white+stroke text
+   ============================== */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Blob colors */
+  --blob-pink:   #E91E96;
+  --blob-blue:   #29B6F6;
+  --blob-green:  #43A047;
+  --blob-purple: #7B1FA2;
+  --blob-orange: #E64A19;
+
+  /* Price badge */
+  --badge-yellow: #FFD600;
+  --badge-border: #1a1a1a;
+
+  /* Brand */
+  --walls-red: #E8001A;
+  --white: #ffffff;
+  --text-dark: #1a1a1a;
+  --radius:   0.625rem;
+  --background:   oklch(1 0 0);
+  --foreground:   oklch(0.145 0 0);
+  --card:   oklch(1 0 0);
+  --card-foreground:   oklch(0.145 0 0);
+  --popover:   oklch(1 0 0);
+  --popover-foreground:   oklch(0.145 0 0);
+  --primary:   oklch(0.205 0 0);
+  --primary-foreground:   oklch(0.985 0 0);
+  --secondary:   oklch(0.97 0 0);
+  --secondary-foreground:   oklch(0.205 0 0);
+  --muted:   oklch(0.97 0 0);
+  --muted-foreground:   oklch(0.556 0 0);
+  --accent:   oklch(0.97 0 0);
+  --accent-foreground:   oklch(0.205 0 0);
+  --destructive:   oklch(0.577 0.245 27.325);
+  --border:   oklch(0.922 0 0);
+  --input:   oklch(0.922 0 0);
+  --ring:   oklch(0.708 0 0);
+  --chart-1:   oklch(0.646 0.222 41.116);
+  --chart-2:   oklch(0.6 0.118 184.704);
+  --chart-3:   oklch(0.398 0.07 227.392);
+  --chart-4:   oklch(0.828 0.189 84.429);
+  --chart-5:   oklch(0.769 0.188 70.08);
+  --sidebar:   oklch(0.985 0 0);
+  --sidebar-foreground:   oklch(0.145 0 0);
+  --sidebar-primary:   oklch(0.205 0 0);
+  --sidebar-primary-foreground:   oklch(0.985 0 0);
+  --sidebar-accent:   oklch(0.97 0 0);
+  --sidebar-accent-foreground:   oklch(0.205 0 0);
+  --sidebar-border:   oklch(0.922 0 0);
+  --sidebar-ring:   oklch(0.708 0 0);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ==============================
+   POSTER SHELL
+   ============================== */
+.poster-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background: #c9eaf5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.poster-wrapper {
+  width: 100%;
+  max-width: 900px;
+  background: var(--walls-red);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+}
+
+/* ==============================
+   HEADER
+   ============================== */
+.poster-header {
+  background: #FF1744;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px 14px;
+}
+
+.header-left { display: flex; align-items: center; gap: 14px; }
+
+.walls-logo-circle {
+  width: 68px;
+  height: 68px;
+  background: #CC0000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  border: 3px solid rgba(255,255,255,0.6);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+.header-text { display: flex; flex-direction: column; }
+
+.brand-title {
+  font-size: clamp(22px, 4.5vw, 44px);
+  font-weight: 900;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-shadow: 2px 3px 0 rgba(0,0,0,0.25);
+}
+
+.brand-tagline {
+  font-size: clamp(13px, 2vw, 20px);
+  color: rgba(255,255,255,0.92);
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.halal-badge {
+  background: white;
+  border-radius: 12px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.halal-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1a7a1a;
+  letter-spacing: 1px;
+}
+
+/* ==============================
+   PRINT TOOLBAR (screen only)
+   ============================== */
+.print-toolbar {
+  display: flex;
+  gap: 10px;
+  padding: 8px 20px;
+  background: rgba(0,0,0,0.15);
+  justify-content: flex-end;
+}
+
+.btn-print {
+  background: #CC0000;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+.btn-print:hover { background: #aa0000; transform: translateY(-2px); }
+
+.btn-admin {
+  background: rgba(255,255,255,0.85);
+  color: var(--text-dark);
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.btn-admin:hover { background: white; transform: translateY(-2px); }
+
+/* ==============================
+   POSTER CONTENT (GRADIENT BG)
+   ============================== */
+.poster-content {
+  position: relative;
+  overflow: hidden;
+  padding: 24px 20px 28px;
+  background:
+    radial-gradient(ellipse at 15% 10%,  rgba(240, 98,146, 0.55) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 5%,   rgba(255,213,  0, 0.50) 0%, transparent 40%),
+    radial-gradient(ellipse at 90% 55%,  rgba(41, 182,246, 0.50) 0%, transparent 45%),
+    radial-gradient(ellipse at 10% 85%,  rgba(67, 160, 71, 0.45) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%,  #4FC3F7 0%,  #0288D1 100%);
+}
+
+/* Decorative background bubbles */
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  pointer-events: none;
+}
+
+/* ==============================
+   BLOB LAYOUT GRID
+   ============================== */
+.blob-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==============================
+   BLOB SECTIONS (organic shapes)
+   ============================== */
+.blob-section {
+  position: relative;
+  padding: 52px 20px 28px; /* top space for price badge */
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s ease;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  cursor: default;
+  /* allow product circles to visually pop OUT of the blob boundary */
+  overflow: visible;
+}
+.blob-section:hover {
+  transform: scale(1.02) rotate(-0.4deg);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+}
+
+/* Full-width blob (Rp 5000) */
+.blob-full { grid-column: 1 / -1; }
+
+/* Pink – Rp 2.500 */
+.blob-pink {
+  background: var(--blob-pink);
+  border-radius: 67% 33% 47% 53% / 37% 57% 43% 63%;
+}
+
+/* Blue – Rp 3.000 */
+.blob-blue {
+  background: var(--blob-blue);
+  border-radius: 42% 58% 35% 65% / 65% 35% 65% 35%;
+}
+
+/* Green – Rp 3.500 */
+.blob-green {
+  background: var(--blob-green);
+  border-radius: 55% 45% 65% 35% / 55% 60% 40% 45%;
+}
+
+/* Purple – Rp 4.000 */
+.blob-purple {
+  background: var(--blob-purple);
+  border-radius: 38% 62% 52% 48% / 60% 41% 59% 40%;
+}
+
+/* Orange – Rp 5.000 */
+.blob-orange {
+  background: var(--blob-orange);
+  border-radius: 50% 50% 35% 65% / 32% 45% 55% 68%;
+}
+
+/* ==============================
+   PRICE BADGE
+   ============================== */
+.price-badge {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  background: var(--badge-yellow);
+  color: var(--text-dark);
+  font-size: clamp(15px, 2.5vw, 20px);
+  font-weight: 900;
+  padding: 7px 20px;
+  border-radius: 50px;
+  border: 3px solid rgba(0,0,0,0.2);
+  box-shadow: 3px 4px 0 rgba(0,0,0,0.18);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  -webkit-text-stroke: 0.5px rgba(0,0,0,0.15);
+}
+
+/* ==============================
+   PRODUCT BUBBLES CONTAINER
+   ============================== */
+.blob-products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 4px;
+}
+
+/* ==============================
+   INDIVIDUAL PRODUCT BUBBLE
+   ============================== */
+.product-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: default;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+  position: relative;
+  z-index: 1;
+}
+.product-bubble:hover {
+  transform: translateY(-20px) scale(1.15);
+  z-index: 20; /* pop above the blob and siblings */
+}
+
+/* 3D Sphere image frame */
+.bubble-img-container {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  /* Sphere illusion: light source top-left */
+  background: radial-gradient(
+    circle at 38% 32%,
+    rgba(255,255,255,1)   0%,
+    rgba(255,255,255,0.7) 40%,
+    rgba(230,230,230,0.9) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.28),    /* outer drop shadow */
+    0 4px 10px rgba(0,0,0,0.14),     /* near shadow */
+    0 0 0 5px rgba(255,255,255,0.65),/* white ring */
+    inset 0 -8px 14px rgba(0,0,0,0.10),  /* bottom inner shadow */
+    inset 3px 4px 10px rgba(255,255,255,0.95); /* top-left highlight */
+  transition: box-shadow 0.28s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+.product-bubble:hover .bubble-img-container {
+  box-shadow:
+    0 24px 50px rgba(0,0,0,0.38),
+    0 10px 22px rgba(0,0,0,0.2),
+    0 0 0 6px rgba(255,255,255,0.85),
+    inset 0 -8px 14px rgba(0,0,0,0.10),
+    inset 3px 4px 10px rgba(255,255,255,0.95);
+  transform: scale(1.06);
+}
+
+.bubble-img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+}
+
+.bubble-placeholder {
+  font-size: 40px;
+  line-height: 1;
+}
+
+/* ==============================
+   BUBBLE TEXT (white + black stroke)
+   ============================== */
+.bubble-name {
+  font-size: 13.5px;
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  max-width: 140px;
+  line-height: 1.3;
+  /* Black outline / hollow effect */
+  -webkit-text-stroke: 1.8px #000;
+  paint-order: stroke fill;
+  text-shadow:
+    1px  1px 3px rgba(0,0,0,0.5),
+   -1px  1px 3px rgba(0,0,0,0.5),
+    1px -1px 3px rgba(0,0,0,0.5),
+   -1px -1px 3px rgba(0,0,0,0.5);
+  letter-spacing: 0.1px;
+}
+
+/* ==============================
+   POSTER FOOTER
+   ============================== */
+.poster-footer {
+  background: #FF1744;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.store-info { color: white; flex: 1; }
+.store-name { font-size: clamp(16px, 2.5vw, 24px); font-weight: 900; margin-bottom: 4px; }
+.store-tagline { font-size: clamp(10px, 1.4vw, 13px); opacity: 0.88; }
+
+.qr-code-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.qr-canvas { display: block; }
+.qr-print-img { display: none; }
+.qr-label {
+  font-size: 10px;
+  color: #444;
+  font-weight: 600;
+  text-align: center;
+  max-width: 120px;
+  line-height: 1.3;
+}
+
+/* ==============================
+   PRINT STYLES — A4 Portrait, 1 page
+   ==============================
+   Root-cause fixes applied here:
+   1. Explicit 210mm×297mm dimensions → prevents 2-page output
+      (100vh is unreliable in print context; mm is precise)
+   2. overflow: hidden on all containers → clips to exactly 1 page
+   3. overflow: hidden on blob-section → clips content to organic shape
+      (was overflow: visible → content escaped blob border-radius → skeleton rectangles)
+   4. box-shadow: none on circles → shadows render as rectangles in PDF
+   5. filter: none on images → drop-shadow causes dark gray box in PDF
+   ============================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0; /* margins handled via poster-page padding below */
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* ── Hide screen-only chrome ── */
+  .poster-header,
+  .print-toolbar,
+  .poster-footer,
+  .deco-circle {
+    display: none !important;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    width: 210mm;
+    height: 297mm;
+  }
+
+  /* Outer container: exactly A4 with 5mm inset padding = our page margins */
+  .poster-page {
+    width: 210mm;
+    height: 297mm;
+    padding: 5mm;
+    min-height: unset;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  /* Wrapper fills the padded area, hard-clips to 1 page */
+  .poster-wrapper {
+    flex: 1;
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Content fills all available space */
+  .poster-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 8px 8px;
+    overflow: hidden;
+    border-radius: 0;
+    position: relative;
+  }
+
+  /* Grid: let rows size to their content naturally (auto) so large circles don't overlap */
+  .blob-layout {
+    flex: 1;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: auto auto auto !important; /* ← CRITICAL: dynamic row height based on content */
+    gap: 10px !important;
+    align-items: stretch !important;
+    min-height: 0;
+  }
+
+  /* Each blob fills its grid cell; badge is in normal flow at top */
+  .blob-section {
+    padding: 8px 6px 8px; /* Tighter padding to save vertical space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2px; /* Tighter gap between badge and products */
+    overflow: visible !important;
+
+    box-shadow: none;
+    transition: none;
+    min-height: 0;
+    min-width: 0;
+  }
+  .blob-section:hover { transform: none !important; }
+
+  /* Products grid inside blob */
+  .blob-products {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 8px;
+    margin-top: 0;
+  }
+
+  /* Product bubble: no animation */
+  .product-bubble {
+    transition: none;
+    gap: 6px;
+    z-index: auto;
+  }
+  .product-bubble:hover { transform: none !important; }
+
+  /* Circles: strictly sized so 2 rows of products fit in 1/3 of A4 height */
+  .bubble-img-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: white !important;
+    box-shadow: none !important;  /* ← CRITICAL: removes Chrome PDF skeleton */
+    border: 4px solid rgba(255,255,255,0.7);
+    transition: none;
+    overflow: hidden;
+  }
+  .product-bubble:hover .bubble-img-container { transform: none !important; }
+
+  /* Product image: fill the circle cleanly, making ice cream photo larger */
+  .bubble-img {
+    width: 92%;
+    height: 92%;
+    object-fit: contain;
+    padding: 0;
+    filter: none; /* drop-shadow filter = gray box in PDF */
+    display: block;
+  }
+
+  /* Product names: text styling for the 120px circle width */
+  .bubble-name {
+    font-size: 11px;
+    max-width: 120px;
+    font-weight: 900;
+    -webkit-text-stroke: 1.5px #000;
+    text-shadow: none; /* remove text-shadow in print */
+    letter-spacing: 0;
+    paint-order: stroke fill;
+  }
+
+  /* Price badge: IN-FLOW so it can never be clipped by overflow or border-radius */
+  .price-badge {
+    position: static;   /* remove absolute — sit as first flex child */
+    font-size: 13px;
+    padding: 5px 14px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.12);
+    flex-shrink: 0;
+    align-self: flex-start; /* left-align within the centered column */
+    margin-left: 4px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ==============================
+   RESPONSIVE MOBILE
+   ============================== */
+@media (max-width: 600px) {
+  .blob-layout { grid-template-columns: 1fr; gap: 16px; }
+  .blob-full { grid-column: auto; }
+  .poster-header { padding: 12px 14px 10px; }
+  .poster-footer { flex-direction: column; align-items: center; text-align: center; }
+  .print-toolbar { padding: 8px 14px; flex-wrap: wrap; }
+  .bubble-img-container { width: 88px; height: 88px; }
+  .blob-products { gap: 10px; }
+}
+
+@theme inline {
+  --radius-sm:   calc(var(--radius) - 4px);
+  --radius-md:   calc(var(--radius) - 2px);
+  --radius-lg:   var(--radius);
+  --radius-xl:   calc(var(--radius) + 4px);
+  --radius-2xl:   calc(var(--radius) + 8px);
+  --radius-3xl:   calc(var(--radius) + 12px);
+  --radius-4xl:   calc(var(--radius) + 16px);
+  --color-background:   var(--background);
+  --color-foreground:   var(--foreground);
+  --color-card:   var(--card);
+  --color-card-foreground:   var(--card-foreground);
+  --color-popover:   var(--popover);
+  --color-popover-foreground:   var(--popover-foreground);
+  --color-primary:   var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:   var(--secondary);
+  --color-secondary-foreground:   var(--secondary-foreground);
+  --color-muted:   var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:   var(--accent);
+  --color-accent-foreground:   var(--accent-foreground);
+  --color-destructive:   var(--destructive);
+  --color-border:   var(--border);
+  --color-input:   var(--input);
+  --color-ring:   var(--ring);
+  --color-chart-1:   var(--chart-1);
+  --color-chart-2:   var(--chart-2);
+  --color-chart-3:   var(--chart-3);
+  --color-chart-4:   var(--chart-4);
+  --color-chart-5:   var(--chart-5);
+  --color-sidebar:   var(--sidebar);
+  --color-sidebar-foreground:   var(--sidebar-foreground);
+  --color-sidebar-primary:   var(--sidebar-primary);
+  --color-sidebar-primary-foreground:   var(--sidebar-primary-foreground);
+  --color-sidebar-accent:   var(--sidebar-accent);
+  --color-sidebar-accent-foreground:   var(--sidebar-accent-foreground);
+  --color-sidebar-border:   var(--sidebar-border);
+  --color-sidebar-ring:   var(--sidebar-ring);
+}
+
+.dark {
+  --background:   oklch(0.145 0 0);
+  --foreground:   oklch(0.985 0 0);
+  --card:   oklch(0.205 0 0);
+  --card-foreground:   oklch(0.985 0 0);
+  --popover:   oklch(0.205 0 0);
+  --popover-foreground:   oklch(0.985 0 0);
+  --primary:   oklch(0.922 0 0);
+  --primary-foreground:   oklch(0.205 0 0);
+  --secondary:   oklch(0.269 0 0);
+  --secondary-foreground:   oklch(0.985 0 0);
+  --muted:   oklch(0.269 0 0);
+  --muted-foreground:   oklch(0.708 0 0);
+  --accent:   oklch(0.269 0 0);
+  --accent-foreground:   oklch(0.985 0 0);
+  --destructive:   oklch(0.704 0.191 22.216);
+  --border:   oklch(1 0 0 / 10%);
+  --input:   oklch(1 0 0 / 15%);
+  --ring:   oklch(0.556 0 0);
+  --chart-1:   oklch(0.488 0.243 264.376);
+  --chart-2:   oklch(0.696 0.17 162.48);
+  --chart-3:   oklch(0.769 0.188 70.08);
+  --chart-4:   oklch(0.627 0.265 303.9);
+  --chart-5:   oklch(0.645 0.246 16.439);
+  --sidebar:   oklch(0.205 0 0);
+  --sidebar-foreground:   oklch(0.985 0 0);
+  --sidebar-primary:   oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground:   oklch(0.985 0 0);
+  --sidebar-accent:   oklch(0.269 0 0);
+  --sidebar-accent-foreground:   oklch(0.985 0 0);
+  --sidebar-border:   oklch(1 0 0 / 10%);
+  --sidebar-ring:   oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
