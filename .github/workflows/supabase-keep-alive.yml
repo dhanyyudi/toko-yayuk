@@ -12,18 +12,46 @@ jobs:
     steps:
       - name: Ping Supabase Database
         env:
-          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          # Prefer dedicated CI names, fallback to Next.js-style names if already configured.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || vars.SUPABASE_URL || secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: |
-          echo "Pinging Supabase REST API to keep project active..."
-          response=$(curl -s -o /dev/null -w "%{http_code}" \
+          echo "Pinging Supabase API to keep project active..."
+
+          if [ -z "$SUPABASE_URL" ]; then
+            echo "Missing SUPABASE_URL. Add one of: secrets.SUPABASE_URL, vars.SUPABASE_URL, or secrets.NEXT_PUBLIC_SUPABASE_URL"
+            exit 1
+          fi
+
+          if [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Missing SUPABASE_ANON_KEY. Add one of: secrets.SUPABASE_ANON_KEY or secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY"
+            exit 1
+          fi
+
+          SUPABASE_URL="${SUPABASE_URL%/}"
+
+          # Try PostgREST root first (schema/table independent).
+          rest_status=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "apikey: $SUPABASE_ANON_KEY" \
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "${SUPABASE_URL}/rest/v1/products?select=id&limit=1")
-          
-          if [ "$response" = "200" ]; then
-            echo "Ping successful (HTTP 200)."
+            -H "Accept: application/openapi+json" \
+            "${SUPABASE_URL}/rest/v1/")
+
+          if [ "$rest_status" -ge 200 ] && [ "$rest_status" -lt 300 ]; then
+            echo "Ping successful via /rest/v1/ (HTTP $rest_status)."
+            exit 0
+          fi
+
+          echo "Primary ping failed on /rest/v1/ with HTTP $rest_status. Trying fallback /auth/v1/settings..."
+
+          # Fallback endpoint that does not depend on your table names.
+          auth_status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            "${SUPABASE_URL}/auth/v1/settings")
+
+          if [ "$auth_status" -ge 200 ] && [ "$auth_status" -lt 300 ]; then
+            echo "Fallback ping successful via /auth/v1/settings (HTTP $auth_status)."
           else
-            echo "Ping failed with HTTP status $response."
+            echo "Ping failed. /rest/v1/ => HTTP $rest_status, /auth/v1/settings => HTTP $auth_status"
             exit 1
           fi
