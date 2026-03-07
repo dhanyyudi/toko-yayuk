@@ -34,3 +34,50 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Supabase Keep Alive workflow setup (GitHub Actions)
+
+If `.github/workflows/supabase-keep-alive.yml` fails, configure these repository settings:
+
+- **Required** secret: `SUPABASE_ANON_KEY`
+- **Required** variable or secret: `SUPABASE_URL`
+
+Fallback names also supported by the workflow:
+
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (secret)
+- `NEXT_PUBLIC_SUPABASE_URL` (secret)
+
+### How to add in GitHub
+
+1. Open repository **Settings** → **Secrets and variables** → **Actions**.
+2. Add secret `SUPABASE_ANON_KEY` with your Supabase anon/public API key.
+3. Add variable `SUPABASE_URL` with your project URL.
+4. Re-run the workflow from **Actions** → **Supabase Keep Alive** → **Run workflow**.
+
+### Where to get these values in Supabase
+
+1. Open your project dashboard.
+2. Go to **Project Settings** → **API**.
+3. Copy:
+   - **Project URL** → use as `SUPABASE_URL` (format: `https://<project-ref>.supabase.co`)
+   - **anon public** key → use as `SUPABASE_ANON_KEY`
+
+If you only know your **project ID** (project ref), you can build the URL directly:
+
+- Project ID: `<project-ref>`
+- `SUPABASE_URL`: `https://<project-ref>.supabase.co`
+
+> Security note: never commit real project values or API keys into repository files.
+>
+> Note: The anon key cannot be derived from project ID. You must copy it from **Project Settings → API** (or **Connect → App Frameworks**).
+
+Tip: In your screenshot, the project URL is already visible on the main project page and should match this format.
+
+### Robust behavior
+
+The workflow now avoids dependency on a specific table (like `products`):
+
+1. It first pings `GET /rest/v1/` with OpenAPI accept header.
+2. If that fails, it falls back to `GET /auth/v1/settings`.
+
+So as long as your Supabase URL and anon key are valid, the keep-alive job can still pass even if table names change.
