@@ -30,12 +30,19 @@ jobs:
 
           SUPABASE_URL="${SUPABASE_URL%/}"
 
+          if [[ ! "$SUPABASE_URL" =~ ^https?:// ]]; then
+            echo "Invalid SUPABASE_URL format: '$SUPABASE_URL'"
+            echo "SUPABASE_URL must start with http:// or https:// (example: https://<project-ref>.supabase.co)"
+            exit 1
+          fi
+
           # Try PostgREST root first (schema/table independent).
-          rest_status=$(curl -s -o /dev/null -w "%{http_code}" \
+          rest_status=$(curl -sS -o /dev/null -w "%{http_code}" \
+            --connect-timeout 10 --max-time 20 \
             -H "apikey: $SUPABASE_ANON_KEY" \
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
             -H "Accept: application/openapi+json" \
-            "${SUPABASE_URL}/rest/v1/")
+            "${SUPABASE_URL}/rest/v1/" || true)
 
           if [ "$rest_status" -ge 200 ] && [ "$rest_status" -lt 300 ]; then
             echo "Ping successful via /rest/v1/ (HTTP $rest_status)."
@@ -45,13 +52,18 @@ jobs:
           echo "Primary ping failed on /rest/v1/ with HTTP $rest_status. Trying fallback /auth/v1/settings..."
 
           # Fallback endpoint that does not depend on your table names.
-          auth_status=$(curl -s -o /dev/null -w "%{http_code}" \
+          auth_status=$(curl -sS -o /dev/null -w "%{http_code}" \
+            --connect-timeout 10 --max-time 20 \
             -H "apikey: $SUPABASE_ANON_KEY" \
-            "${SUPABASE_URL}/auth/v1/settings")
+            "${SUPABASE_URL}/auth/v1/settings" || true)
 
           if [ "$auth_status" -ge 200 ] && [ "$auth_status" -lt 300 ]; then
             echo "Fallback ping successful via /auth/v1/settings (HTTP $auth_status)."
           else
+            if [ "$rest_status" = "000" ] || [ "$auth_status" = "000" ]; then
+              echo "Ping failed due to connection/DNS error (curl returned HTTP 000)."
+              echo "Check SUPABASE_URL host spelling and ensure URL does not contain extra spaces/quotes."
+            fi
             echo "Ping failed. /rest/v1/ => HTTP $rest_status, /auth/v1/settings => HTTP $auth_status"
             exit 1
           fi
